@@ -6,14 +6,14 @@ let canvas;
 let textDiv;
 let textP;
 let buttonDiv;
-let resetButton
+let resetButton;
 
 // Global Game Variables
 let snake;
 let food;
 let resolution;
-let scaledwidth;
-let scaledheight;
+let scaledWidth;
+let scaledHeight;
 let score;
 
 function setup() {
@@ -29,38 +29,67 @@ function setup() {
   resetButton.mousePressed(resetGame);
   resetButton.parent(buttonDiv);
   // Set the resolution to 20. Play with this later if you want.
-  resolution = 20;
+  resolution = 20; 
   // Scaled width and height are width / resolution, height / resolution
-  scaledwidth = floor(width / resolution);
-  scaledheight = floor(height / resolution)
-
+  scaledWidth = floor(width / resolution);
+  scaledHeight = floor(height / resolution);
   // Set the game's framerate to 5 (or whatever you prefer)
-  framerate(5);
-  // Call resetGame() to initialize everything else.
-  resetGame();
+  frameRate(6);
+  // // Call resetGame() to initialize everything else.
+   resetGame();
 }
 
 function draw() {
   // Scale the canvas according to resolution, then refresh the background
-
+  scale(resolution);
+  background(220);
   // Check if snake is eating the food
-
+  if(snake.eat(food)) {
+    createFood();
+    score++;
+    textP.html("Score: " + score);
+  };
   // Draw the snake
+  snake.update();
+  snake.show();
 
   // Draw the food
-
+  noStroke();
+  fill(255, 0, 0);
+  rect(food.x, food.y, 1, 1);
   // Check for game over
-
+  if(snake.endGame()) {
+    textP.html("Game Over. Final Score: " + score);
+  background(255, 0, 0);
+  noLoop();
+  buttonDiv.style("display" , "block")
+  }
 }
 
 function createFood() {
-
+  let x = floor(random(scaledWidth));
+  let y = floor(random(scaledHeight));
+  food = createVector(x, y);
 }
 
 function keyPressed() {
-
+  if(keyCode === UP_ARROW && snake.yDirection === 0) {
+    snake.setDirection(0, -1)
+  } else if(keyCode === DOWN_ARROW && snake.yDirection === 0) {
+    snake.setDirection(0, 1)
+  } else if(keyCode === LEFT_ARROW && snake.xDirection === 0) {
+    snake.setDirection(-1, 0)
+  } else if(keyCode === RIGHT_ARROW && snake.xDirection === 0) {
+    snake.setDirection(1, 0)
+  }
 }
 
 function resetGame() {
-
+  // Instantiate a new Snake and food object
+  snake = new Snake();
+  createFood();
+  score = 0;
+  textP.html("Score: " + score);
+  loop();
+  buttonDiv.style("display", "none");
 }

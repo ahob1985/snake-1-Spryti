@@ -1,7 +1,7 @@
 class Snake {
 
   constructor() {
-    this.body = [];
+    this.body = []; 
     this.body[0] = createVector(floor(scaledWidth / 2), floor(scaledHeight / 2));
     this.xDirection = 0;
     this.yDirection = 0;
@@ -16,21 +16,40 @@ class Snake {
   }
 
   endGame() {
-
+    let head = this.body[this.body.length - 1];
+    // Check if snake touched wall
+    if(head.x > scaledWidth - 1 || head.x < 0 ||head.y > scaledHeight - 1 || head.y < 0) {
+      return true;
+    } 
+    // Check if snake touched self
+    for(let i = 0; i < this.body.length - 1; i++){
+      let part = this.body[i];
+      if(part.x === head.x && part.y === head.y) {
+        return true;
+      } 
+    }
+    return false;
   }
 
   grow() {
-
+    let head = this.body[this.body.length - 1].copy();
+    this.body.push(head);
   }
 
   eat(food) {
-
+  let head = this.body[this.body.length - 1];
+  if(head.x === food.x && head.y === food.y) {
+      this.grow();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   show() {
-    for(let i = 0; i < this.body.lebth; i++) {
+    for(let i = 0; i < this.body.length; i++) {
       fill(0);
-      noString();
+      noStroke();
       rect(this.body[i].x, this.body[i].y, 1, 1);
     }
   }
